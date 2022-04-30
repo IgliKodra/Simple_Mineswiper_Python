@@ -1,12 +1,8 @@
-import itertools
-
 class tile:
-    newid = itertools.count()
     def __init__(self):
         self.symbol='◙'
         self.type=""
         self.value=0
-        self.id = next(self.newid)
 
 def printBoard(W,H,field):
     print("  ║",end="")
@@ -45,4 +41,4 @@ def main(W,H):
         field[int(cord[2])][int(cord[0])].symbol='+'
 
 if __name__=="__main__":
-    main(3,3)
+    main(10,10)
