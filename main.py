@@ -1,3 +1,4 @@
+#field[height value][width value]
 from random import randint as ri
 import os
 class tile:
@@ -6,8 +7,10 @@ class tile:
         self.type="safe"
         self.value=0
 
-def nothing():
-    return 0
+    def explode(self):
+        if (self.type=="bomb"):
+            os.system('cls')
+            print(f"BOOM")
 
 def printBoard(W,H,field):
     print("  ║",end="")
@@ -29,60 +32,41 @@ def printBoard(W,H,field):
 
         print()
 
-def explode():
-    os.system('cls')
-    print(f"BOOM")
-
 def check(x,y,field):
     if field[x][y].type=="bomb":
-        explode()
+        field[x][y].explode()
     field[x][y].symbol='+'
     printBoard(10,10,field)
 
 def setValue(W,H,field):
-    for j in range (H):
-        for i in range (W):
+    for i in range (H):
+        for j in range (W):
             if (field[i][j].type == "safe"):
-                try:
-                    if (field[i+1][j+1]=="bomb"):
+                # field[i][j].value+=8
+                if (i+1<H and j+1<W):
+                    if (field[i+1][j+1].type=="bomb"):
                         field[i][j].value+=1
-                except:
-                    nothing()
-                try:
-                    if (field[i][j+1]=="bomb"):
+                if(j+1<W):
+                    if (field[i][j+1].type=="bomb"):
                         field[i][j].value+=1
-                except:
-                    nothing()
-                try:
-                    if (field[i-1][j+1]=="bomb"):
+                if(i-1>=0 and j+1<W):
+                    if (field[i-1][j+1].type=="bomb"):
                         field[i][j].value+=1
-                except:
-                    nothing()
-                try:
-                    if (field[i+1][j]=="bomb"):
+                if(i+1<H):
+                    if (field[i+1][j].type=="bomb"):
                         field[i][j].value+=1
-                except:
-                    nothing()
-                try:
-                    if (field[i-1][j]=="bomb"):
+                if(i-1>=0):
+                    if (field[i-1][j].type=="bomb"):
                         field[i][j].value+=1
-                except:
-                    nothing()
-                try:
-                    if (field[i+1][j-1]=="bomb"):
+                if(i+1<H and j-1>=0):
+                    if (field[i+1][j-1].type=="bomb"):
                         field[i][j].value+=1
-                except:
-                    nothing
-                try:
-                    if (field[i][j-1]=="bomb"):
+                if(j-1>=0):
+                    if (field[i][j-1].type=="bomb"):
                         field[i][j].value+=1
-                except:
-                    nothing()
-                try:
-                    if (field[i+1][j-1]=="bomb"):
+                if(i+1<H and j-1>=0):
+                    if (field[i+1][j-1].type=="bomb"):
                         field[i][j].value+=1
-                except:
-                    nothing()
 
 def main(W,H,B):
     # Krijon fushen e lojes dhe e mbushe me objektet qe do jete tile-at e lojes
@@ -115,4 +99,4 @@ def main(W,H,B):
         # field[int(cord[2])][int(cord[0])].symbol='+'
 
 if __name__=="__main__":
-    main(10,10,10)
+    main(5,5,15)
