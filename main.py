@@ -1,13 +1,13 @@
 #field[height value][width value]
 from random import randint as ri
 import os
-import sys
 class tile:
     def __init__(self):
-        self.symbol='◙'
+        self.symbol='■'
         self.Tvalue=0
         self.h=0
         self.w=0
+        self.isOpen=False
 
     def explode(self):
         if (self.Tvalue==9):
@@ -17,40 +17,44 @@ class tile:
 def printBoard(gridsize,field):
     print("  ║",end="")
     for i in range(gridsize):
-        print(i,end="")
+        print(i,end=" ")
 
     print("\n══╬",end="")
     for i in range(gridsize):
-        print("═",end="")
+        print("══",end="")
 
     print()
 
     for i in range(gridsize):
         print(str(i)+" ║",end="")
         for j in range(gridsize):
-            # print(field[i][j].symbol, end="")
-            print(field[i][j].symbol, end="")
-            # print(field[i][j], end="")
+            if field[i][j].isOpen==True:
+                if field[i][j].Tvalue==0:
+                    print(" ", end=" ")
+                else:
+                    print(field[i][j].Tvalue, end=" ")
+            else:
+                # print(field[i][j].symbol, end=" ")
+                print("■", end=" ")
         print()
 
-def openBlank(field,gridsize,i,j):
+def openT(field,gridsize,i,j):
     for k in neighbor(field,gridsize,i,j):
-        if (k.Tvalue==0 and k.symbol != " "):
-            k.symbol=" "
-            openBlank(field,gridsize,k.h,k.w)
-        elif (0<k.Tvalue<9):
-            k.symbol=str(k.Tvalue)
+        if (k.Tvalue==0 and k.isOpen==False):
+            k.isOpen=True
+            openT(field,gridsize,k.h,k.w)
+        elif (0<k.Tvalue and k.Tvalue<9 and k.isOpen==False):
+            k.isOpen=True
                         
-def check(x,y,field,gridsize):
-    if field[x][y].Tvalue==9:
-        field[x][y].explode()
-    elif (field[x][y].Tvalue==0):
-        field[x][y].symbol=" "
-        openBlank(field,gridsize,x,y)
+def check(cell,field,gridsize):
+    if cell.Tvalue==9:
+        cell.explode()
+    elif (cell.Tvalue==0):
+        cell.isOpen=True
+        openT(field,gridsize,cell.h,cell.w)
     else:
-        field[x][y].symbol=str(field[x][y].Tvalue)
-        
-    printBoard(10,field)
+        cell.isOpen=True
+        openT(field,gridsize,cell.h,cell.w)
 
 def neighbor(field,gridsize,h,w):
     neighbors=[]
@@ -78,30 +82,28 @@ def main(gridsize,B):
         for j in range(0, gridsize):
             row+=[tile()]
         field+=[list(row.copy())].copy()
+    for i in range(0, gridsize):
+        for j in range(0, gridsize):
+            field[i][j].h=i
+            field[i][j].w=j
 
 
     for i in range(B):
-        # field[ri(0,gridsize-1)][ri(0,gridsize-1)].symbol='☺'
         field[ri(0,gridsize-1)][ri(0,gridsize-1)].Tvalue=9
     # Loop-i krysor i lojes
-    alive=True
     setTvalue(gridsize,field)
-    # for i in range(gridsize):
-    #     for j in range(gridsize):
-    #         field[i][j].h=i
-    #         field[i][j].w=j
-    #         field[i][j].symbol=str(field[i][j].Tvalue)
     printBoard(gridsize,field)
-    while(alive):
+    while(True):
+        os.system("cls")
+        printBoard(gridsize,field)
         cord=input("Input the cords: ")
         if cord=='p':
             break
         cord.split(',')
-        check(int(cord[2]),int(cord[0]),field,gridsize)
-
-        # field[int(cord[2])][int(cord[0])].symbol='+'
+        try:
+            check(field[int(cord[2])][int(cord[0])],field,gridsize)
+        except:
+            print(f"Please input some correct coordinates")
 
 if __name__=="__main__":
-    # sys.setrecursionlimit(2000)
-    # print(sys.getrecursionlimit())
-    main(10,15)
+    main(10,10)
