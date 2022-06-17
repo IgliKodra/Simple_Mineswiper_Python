@@ -1,19 +1,19 @@
-#field[height Tvalue][width Tvalue]
+#field[height value][width value]
 from random import randint as ri
 import os
+import sys
 class tile:
     def __init__(self):
         self.symbol='◙'
         self.Tvalue=0
-        self.x=0
-        self.y=0
+        self.h=0
+        self.w=0
 
     def explode(self):
         if (self.Tvalue==9):
             os.system('cls')
             print(f"BOOM")
             
-
 def printBoard(gridsize,field):
     print("  ║",end="")
     for i in range(gridsize):
@@ -29,19 +29,18 @@ def printBoard(gridsize,field):
         print(str(i)+" ║",end="")
         for j in range(gridsize):
             # print(field[i][j].symbol, end="")
-            print(field[i][j].symbol, end=",")
+            print(field[i][j].symbol, end="")
             # print(field[i][j], end="")
         print()
 
 def openBlank(field,gridsize,i,j):
     for k in neighbor(field,gridsize,i,j):
-                    if (k.Tvalue==0):
-                        k.symbol=" "
-                        openBlank(field,gridsize,k.y,k.x)
-                    else:
-                        k.symbol=str(k.Tvalue)
+        if (k.Tvalue==0 and k.symbol != " "):
+            k.symbol=" "
+            openBlank(field,gridsize,k.h,k.w)
+        elif (0<k.Tvalue<9):
+            k.symbol=str(k.Tvalue)
                         
-
 def check(x,y,field,gridsize):
     if field[x][y].Tvalue==9:
         field[x][y].explode()
@@ -82,16 +81,16 @@ def main(gridsize,B):
 
 
     for i in range(B):
-        field[ri(0,gridsize-1)][ri(0,gridsize-1)].symbol='☺'
+        # field[ri(0,gridsize-1)][ri(0,gridsize-1)].symbol='☺'
         field[ri(0,gridsize-1)][ri(0,gridsize-1)].Tvalue=9
     # Loop-i krysor i lojes
     alive=True
     setTvalue(gridsize,field)
-    for i in range(gridsize):
-        for j in range(gridsize):
-            field[i][j].x=j
-            field[i][j].symbol=str(field[i][j].Tvalue)
-            field[i][j].y=i
+    # for i in range(gridsize):
+    #     for j in range(gridsize):
+    #         field[i][j].h=i
+    #         field[i][j].w=j
+    #         field[i][j].symbol=str(field[i][j].Tvalue)
     printBoard(gridsize,field)
     while(alive):
         cord=input("Input the cords: ")
@@ -103,4 +102,6 @@ def main(gridsize,B):
         # field[int(cord[2])][int(cord[0])].symbol='+'
 
 if __name__=="__main__":
+    # sys.setrecursionlimit(2000)
+    # print(sys.getrecursionlimit())
     main(10,15)
